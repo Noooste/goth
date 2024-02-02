@@ -3,8 +3,8 @@ package azuread_test
 import (
 	"testing"
 
-	"github.com/markbates/goth"
-	"github.com/markbates/goth/providers/azuread"
+	"github.com/Noooste/goth"
+	"github.com/Noooste/goth/providers/azuread"
 	"github.com/stretchr/testify/assert"
 )
 

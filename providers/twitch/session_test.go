@@ -3,7 +3,7 @@ package twitch
 import (
 	"testing"
 
-	"github.com/markbates/goth"
+	"github.com/Noooste/goth"
 	"github.com/stretchr/testify/assert"
 )
 

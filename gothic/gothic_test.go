@@ -12,10 +12,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/Noooste/goth"
+	. "github.com/Noooste/goth/gothic"
+	"github.com/Noooste/goth/providers/faux"
 	"github.com/gorilla/sessions"
-	"github.com/markbates/goth"
-	. "github.com/markbates/goth/gothic"
-	"github.com/markbates/goth/providers/faux"
 	"github.com/stretchr/testify/assert"
 )
 

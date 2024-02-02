@@ -3,8 +3,8 @@ package yandex_test
 import (
 	"testing"
 
-	"github.com/markbates/goth"
-	"github.com/markbates/goth/providers/yandex"
+	"github.com/Noooste/goth"
+	"github.com/Noooste/goth/providers/yandex"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -3,8 +3,8 @@ package box_test
 import (
 	"testing"
 
-	"github.com/markbates/goth"
-	"github.com/markbates/goth/providers/box"
+	"github.com/Noooste/goth"
+	"github.com/Noooste/goth/providers/box"
 	"github.com/stretchr/testify/assert"
 )
 

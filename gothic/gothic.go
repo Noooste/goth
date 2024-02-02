@@ -3,7 +3,7 @@ Package gothic wraps common behaviour when using Goth. This makes it quick, and 
 and running with Goth. Of course, if you want complete control over how things flow, in regard
 to the authentication process, feel free and use Goth directly.
 
-See https://github.com/markbates/goth/blob/master/examples/main.go to see this in action.
+See https://github.com/Noooste/goth/blob/master/examples/main.go to see this in action.
 */
 package gothic
 
@@ -16,19 +16,18 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
 	"strings"
 
+	"github.com/Noooste/goth"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
-	"github.com/markbates/goth"
 )
 
 // SessionName is the key used to access the session store.
-const SessionName = "_gothic_session"
+var SessionName = "_gothic_session"
 
 // Store can/should be set by applications using gothic. The default is a cookie store.
 var Store sessions.Store
@@ -59,17 +58,17 @@ as either "provider" or ":provider".
 BeginAuthHandler will redirect the user to the appropriate authentication end-point
 for the requested provider.
 
-See https://github.com/markbates/goth/examples/main.go to see this in action.
+See https://github.com/Noooste/goth/examples/main.go to see this in action.
 */
 func BeginAuthHandler(res http.ResponseWriter, req *http.Request) {
-	url, err := GetAuthURL(res, req)
+	authURL, err := GetAuthURL(res, req)
 	if err != nil {
 		res.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintln(res, err)
+		_, _ = fmt.Fprintln(res, err)
 		return
 	}
 
-	http.Redirect(res, req, url, http.StatusTemporaryRedirect)
+	http.Redirect(res, req, authURL, http.StatusTemporaryRedirect)
 }
 
 // SetState sets the state string associated with the given request.
@@ -135,7 +134,7 @@ func GetAuthURL(res http.ResponseWriter, req *http.Request) (string, error) {
 		return "", err
 	}
 
-	url, err := sess.GetAuthURL()
+	authURL, err := sess.GetAuthURL()
 	if err != nil {
 		return "", err
 	}
@@ -146,7 +145,7 @@ func GetAuthURL(res http.ResponseWriter, req *http.Request) (string, error) {
 		return "", err
 	}
 
-	return url, err
+	return authURL, err
 }
 
 /*
@@ -156,7 +155,7 @@ process and fetches all the basic information about the user from the provider.
 It expects to be able to get the name of the provider from the query parameters
 as either "provider" or ":provider".
 
-See https://github.com/markbates/goth/examples/main.go to see this in action.
+See https://github.com/Noooste/goth/examples/main.go to see this in action.
 */
 var CompleteUserAuth = func(res http.ResponseWriter, req *http.Request) (goth.User, error) {
 	if !keySet && defaultStore == Store {
@@ -177,7 +176,12 @@ var CompleteUserAuth = func(res http.ResponseWriter, req *http.Request) (goth.Us
 	if err != nil {
 		return goth.User{}, err
 	}
-	defer Logout(res, req)
+	defer func(res http.ResponseWriter, req *http.Request) {
+		err := Logout(res, req)
+		if err != nil {
+			fmt.Println(err)
+		}
+	}(res, req)
 	sess, err := provider.UnmarshalSession(value)
 	if err != nil {
 		return goth.User{}, err
@@ -196,7 +200,10 @@ var CompleteUserAuth = func(res http.ResponseWriter, req *http.Request) (goth.Us
 
 	params := req.URL.Query()
 	if params.Encode() == "" && req.Method == "POST" {
-		req.ParseForm()
+		err := req.ParseForm()
+		if err != nil {
+			return goth.User{}, err
+		}
 		params = req.Form
 	}
 
@@ -341,7 +348,7 @@ func getSessionValue(session *sessions.Session, key string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	s, err := ioutil.ReadAll(r)
+	s, err := io.ReadAll(r)
 	if err != nil {
 		return "", err
 	}

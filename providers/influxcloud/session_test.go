@@ -3,8 +3,8 @@ package influxcloud_test
 import (
 	"testing"
 
-	"github.com/markbates/goth"
-	"github.com/markbates/goth/providers/influxcloud"
+	"github.com/Noooste/goth"
+	"github.com/Noooste/goth/providers/influxcloud"
 	"github.com/stretchr/testify/assert"
 )
 

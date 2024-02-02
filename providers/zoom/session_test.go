@@ -3,8 +3,8 @@ package zoom_test
 import (
 	"testing"
 
-	"github.com/markbates/goth"
-	"github.com/markbates/goth/providers/zoom"
+	"github.com/Noooste/goth"
+	"github.com/Noooste/goth/providers/zoom"
 	"github.com/stretchr/testify/assert"
 )
 
